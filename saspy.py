@@ -7,11 +7,9 @@ SASpy - ATSAS PLUGIN FOR PYMOL
 import os
 import sys
 import re
-import time
 import shutil
 import string
 import Tkinter
-import tkSimpleDialog
 import tkMessageBox
 import tkFileDialog
 import tempfile
@@ -23,7 +21,7 @@ import itertools
 # pymol lib
 try:
     from pymol import cmd
-    from pymol.cgo import *
+#    from pymol.cgo import *
 except ImportError:
     print 'Warning: pymol library cmd not found.'
     sys.exit(1)
@@ -313,12 +311,6 @@ class SASpy:
         print "Setting crysol mode to "+mode
         self.crysolmode.set(mode)
         self.crymodebut.setvalue(mode)
-
-    def setDatMode(self, mode):
-        print "Setting open mode to " + mode
-        global datmode
-        datmode.set(mode)
-        self.datmodebut.setvalue(mode)
 
     def submitJobAsThread(self, procType, models= []):
         viewer = datViewer.get()
@@ -637,8 +629,7 @@ def sreflex(SaxsDataFileName, models,
     if False == os.path.isfile(SaxsDataFileName):
         message("SAXS .dat file \'"+SaxsDataFileName+"\' not found")
         return
-    fileFullPath = os.path.abspath(SaxsDataFileName);
-    cwd = os.getcwd()
+    fileFullPath = os.path.abspath(SaxsDataFileName)
     pdbs = []
     for m in models:
         pdbfn = writePdb(m)
@@ -673,7 +664,6 @@ def readTransformationMatrixFromPdbRemark(pdbfn):
     #read transformation matrix from output pdb
     #useful for alpraxin and supalm
     rf = open(pdbfn, 'r')
-    read = 1
     a=[]
     c=4
 
@@ -734,6 +724,7 @@ def openDatFile(viewer, fnlst = []):
         if not os.path.isfile(fn):
             message("ERROR Curve file \'" + fn + "\' not found.")
     viewerproc = subprocess.Popen([viewer] + fnlst)
+    return viewerproc
 
 def sasref(SaxsDataFileName, models = [], viewer='sasplot', param = " "):
     global modelingRuns
